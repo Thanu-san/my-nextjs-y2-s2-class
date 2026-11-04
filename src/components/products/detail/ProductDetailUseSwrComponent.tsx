@@ -14,7 +14,7 @@ type ProductIdType = {
 export default function ProductDetailUseSWRComponent({proId}:ProductIdType) {
  
   const { data, error, isLoading } = 
-  useSWR(`${process.env.NEXT_PUBLIC_DUMMY_BASE_URL}/products/${proId}`, fetcher)
+  useSWR(`/api/products/${proId}`, fetcher)
 
   if (error) return <div>failed to load</div>
   if (isLoading) return <div>loading...</div>

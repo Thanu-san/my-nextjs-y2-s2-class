@@ -11,7 +11,7 @@ export default function ProductCardListComponent() {
   useEffect(() => {
     // logic of fetching api 
     async function fetchData() {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_DUMMY_BASE_URL}/products`);
+      const response = await fetch(`/api/products`);
       const data = await response.json(); //convert from json to js object
       setProducts(data.products);
     }
