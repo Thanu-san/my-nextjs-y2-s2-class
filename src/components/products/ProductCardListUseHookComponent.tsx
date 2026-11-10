@@ -10,11 +10,13 @@ export default function ProductCardListUseHookComponent({
   const products = use(product);
 
   return (
-    <section className="container mx-auto grid grid-cols-1 gap-8 p-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-      {products?.map(({ images, title, description, price, id }) => (
-        <Link 
-         href={`/products/${id}`}
-         key={id}>
+    <section className="container mx-auto grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {products?.map(({ id, images, title, description, price }) => (
+        <Link
+          href={`/products/${id}`}
+          key={id}
+          className="group block h-full focus:outline-hidden"
+        >
           <ProductCardComponent
             images={images}
             title={title}

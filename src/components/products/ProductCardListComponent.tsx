@@ -1,37 +1,58 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ProductCardComponent } from "./ProductCardComponent";
+import Link from "next/link";
+import { ProductCardComponent, ProductResponse } from "./ProductCardComponent";
 
 export default function ProductCardListComponent() {
-  // create state 
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<ProductResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // create effect for side-effect (api, web socket)
   useEffect(() => {
-    // logic of fetching api 
     async function fetchData() {
-      const response = await fetch(`/api/products`);
-      const data = await response.json(); //convert from json to js object
-      setProducts(data.products);
+      try {
+        const response = await fetch(`/api/products`);
+        const data = await response.json();
+        setProducts(data.products || []);
+      } catch (err) {
+        console.error("Failed to fetch products:", err);
+      } finally {
+        setIsLoading(false);
+      }
     }
 
-    fetchData(); 
+    fetchData();
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div
+            key={i}
+            className="h-72 rounded-xl border border-border/50 bg-muted/20 animate-pulse"
+          />
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <section className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-8 gap-8 mx-auto">
-      {
-        products?.map(({ id, images, title, description, price }) => (
+    <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+      {products?.map(({ id, images, title, description, price }) => (
+        <Link
+          key={id}
+          href={`/products/${id}`}
+          className="group block h-full focus:outline-hidden"
+        >
           <ProductCardComponent
-            key={id}
             images={images}
             title={title}
             description={description}
             price={price}
           />
-        ))
-      }
+        </Link>
+      ))}
     </section>
   );
 }

@@ -13,7 +13,7 @@ export default async function ModalProduct({
 
   return (
     <Dialog open>
-      <DialogContent className="sm:max-w-sm">
+      <DialogContent className="max-w-2xl sm:max-w-3xl p-6">
         <ProductDetailUseSWRComponent proId={Number(id)} />
       </DialogContent>
     </Dialog>

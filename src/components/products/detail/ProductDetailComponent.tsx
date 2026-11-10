@@ -1,14 +1,5 @@
 import { Suspense } from "react";
 import Image from "next/image";
-import { Price, PriceValue } from "@/components/products/price";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { ProductResponse } from "../ProductCardComponent";
 import ProductDetailDisplayComponent from "./ProductDetailDisplayComponent";
 
@@ -18,32 +9,39 @@ export function ProductCardDetailComponent({
   description,
   price,
 }: ProductResponse) {
-  return (
-    <section className="container mx-auto p-8">
-      <Card className="overflow-hidden p-0">
-        <div className="grid grid-cols-1 md:grid-cols-2">
-          <CardHeader className="p-0">
-            <AspectRatio ratio={1}>
-              <Image
-                src={images?.[0] || "/placeholder.svg"}
-                alt={title}
-                width={600}
-                height={600}
-                className="size-full object-cover"
-              />
-            </AspectRatio>
-          </CardHeader>
+  const imageUrl = images?.[0] || "/placeholder.svg";
 
-          <CardContent className="flex flex-col justify-center gap-6 p-8">
-            <CardTitle className="text-3xl font-bold">{title}</CardTitle>
-            <CardDescription className="text-base">{description}</CardDescription>
-            <Price className="text-2xl font-semibold">
-              <PriceValue price={price} currency="USD" variant="regular" />
-            </Price>
-          </CardContent>
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center w-full">
+      {/* Product Image */}
+      <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-border/60 bg-muted/20">
+        <Image
+          src={imageUrl}
+          alt={title}
+          fill
+          sizes="(max-width: 768px) 100vw, 400px"
+          className="object-contain p-4"
+          priority
+        />
+      </div>
+
+      {/* Product Details */}
+      <div className="flex flex-col gap-4">
+        <h2 className="text-2xl font-bold tracking-tight text-foreground">
+          {title}
+        </h2>
+
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          {description}
+        </p>
+
+        <div className="pt-2 border-t border-border/50">
+          <span className="text-2xl font-bold text-foreground">
+            ${price?.toFixed(2)}
+          </span>
         </div>
-      </Card>
-    </section>
+      </div>
+    </div>
   );
 }
 
@@ -64,8 +62,16 @@ export default function ProductDetailComponent({
   const product = getProductById(productId);
 
   return (
-    <Suspense fallback={<h1>Loading product...</h1>}>
-      <ProductDetailDisplayComponent product={product} />
+    <Suspense
+      fallback={
+        <div className="container mx-auto max-w-4xl p-8 flex items-center justify-center min-h-[300px]">
+          <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        </div>
+      }
+    >
+      <div className="container mx-auto max-w-4xl px-4 py-8">
+        <ProductDetailDisplayComponent product={product} />
+      </div>
     </Suspense>
   );
 }

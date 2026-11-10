@@ -9,14 +9,9 @@ export default function ProductDetailDisplayComponent({
 }) {
   const productData = use(product);
 
-  const { images, title, description, price } = productData;
-
   return (
-    <ProductCardDetailComponent
-      images={images}
-      title={title}
-      description={description}
-      price={price}
-    />
+    <div className="rounded-2xl border bg-card p-6 shadow-sm sm:p-8">
+      <ProductCardDetailComponent {...productData} />
+    </div>
   );
 }
