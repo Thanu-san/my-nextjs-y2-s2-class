@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
 import { cn } from "cn";
+import Link from "next/link";
 
 function Breadcrumb({ ...props }: React.ComponentProps<"nav">) {
   return <nav aria-label="breadcrumb" data-slot="breadcrumb" {...props} />;
@@ -31,14 +32,32 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
 
 function BreadcrumbLink({
   className,
+  href,
+  children,
   ...props
 }: React.ComponentProps<"a">) {
+  if (href && (href.startsWith("/") || href === "#")) {
+    return (
+      <Link
+        href={href}
+        data-slot="breadcrumb-link"
+        className={cn("hover:text-foreground transition-colors", className)}
+        {...props}
+      >
+        {children}
+      </Link>
+    );
+  }
+
   return (
     <a
+      href={href}
       data-slot="breadcrumb-link"
       className={cn("hover:text-foreground transition-colors", className)}
       {...props}
-    />
+    >
+      {children}
+    </a>
   );
 }
 

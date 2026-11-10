@@ -8,6 +8,8 @@ import {
   Settings,
 } from "lucide-react";
 import { cn } from "cn";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 import {
   Breadcrumb,
@@ -34,7 +36,6 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
 
 type NavItem = {
   label: string;
@@ -74,7 +75,6 @@ const sidebarData: SidebarData = {
           label: "Dashboard",
           icon: LayoutDashboard,
           href: "/dashboard",
-          isActive: true,
         },
         { label: "Team", icon: ClipboardList, href: "/dashboard/team" },
         { label: "User", icon: BarChart3, href: "/dashboard/users" },
@@ -95,7 +95,7 @@ const SidebarLogo = ({ logo }: { logo: SidebarData["logo"] }) => {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton size="lg">
+        <SidebarMenuButton size="lg" render={<Link href="/" />}>
           <div className="flex aspect-square size-8 items-center justify-center rounded-sm bg-primary">
             <img
               src={logo.src}
@@ -116,12 +116,12 @@ const SidebarLogo = ({ logo }: { logo: SidebarData["logo"] }) => {
 };
 
 const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
+  const pathname = usePathname();
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <Link href={"/"}>
-          <SidebarLogo logo={sidebarData.logo} />
-        </Link>
+        <SidebarLogo logo={sidebarData.logo} />
       </SidebarHeader>
       <SidebarContent>
         {sidebarData.navGroups.map((group) => (
@@ -129,16 +129,20 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
             <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {group.items.map((item) => (
-                  <SidebarMenuItem key={item.label}>
-                    <SidebarMenuButton
-                      isActive={item.isActive}
-                      render={<a href={item.href} />}
-                    >
-                      {item.label}
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {group.items.map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <SidebarMenuItem key={item.label}>
+                      <SidebarMenuButton
+                        isActive={isActive}
+                        render={<Link href={item.href} />}
+                      >
+                        {item.icon && <item.icon />}
+                        {item.label}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -151,7 +155,8 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
             <SidebarMenu>
               {sidebarData.footerGroup.items.map((item) => (
                 <SidebarMenuItem key={item.label}>
-                  <SidebarMenuButton render={<a href={item.href} />}>
+                  <SidebarMenuButton render={<Link href={item.href} />}>
+                    {item.icon && <item.icon />}
                     {item.label}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -178,6 +183,21 @@ export default function DashboardLayout({
   team: React.ReactNode;
   products: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
+  const isProducts = pathname.startsWith("/dashboard/products");
+  const isTeam = pathname.startsWith("/dashboard/team");
+  const isUsers = pathname.startsWith("/dashboard/users");
+  const isDashboardHome = pathname === "/dashboard";
+
+  const currentPageTitle = isTeam
+    ? "Team"
+    : isUsers
+    ? "User"
+    : isProducts
+    ? "Products"
+    : "Dashboard";
+
   return (
     <SidebarProvider className={cn(className)}>
       <AppSidebar />
@@ -191,21 +211,20 @@ export default function DashboardLayout({
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">Overview</BreadcrumbLink>
+                <BreadcrumbLink href="/dashboard">Overview</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Dashboard</BreadcrumbPage>
+                <BreadcrumbPage>{currentPageTitle}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 ">
-          {/* <div className="min-h-screen flex-1 rounded-xl bg-muted/50 md:min-h-min" /> */}
-          {products}
-          {team}
-          {users}
-          {children}
+          {isProducts && products}
+          {isTeam && team}
+          {isUsers && users}
+          {(isDashboardHome || (!isProducts && !isTeam && !isUsers)) && children}
         </div>
       </SidebarInset>
     </SidebarProvider>
