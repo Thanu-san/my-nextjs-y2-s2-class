@@ -39,10 +39,10 @@ export default function ProductCardListComponent() {
 
   return (
     <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
-      {products?.map(({ id, images, title, description, price }) => (
+      {products?.map(({ id, images, title, description, price, category }) => (
         <Link
           key={id}
-          href={`/products/${id}`}
+          href={category ? `/products/${id}?category=${category}` : `/products/${id}`}
           className="group block h-full focus:outline-hidden"
         >
           <ProductCardComponent

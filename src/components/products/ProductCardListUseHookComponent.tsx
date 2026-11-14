@@ -11,9 +11,9 @@ export default function ProductCardListUseHookComponent({
 
   return (
     <section className="container mx-auto grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-      {products?.map(({ id, images, title, description, price }) => (
+      {products?.map(({ id, images, title, description, price, category }) => (
         <Link
-          href={`/products/${id}`}
+          href={category ? `/products/${id}?category=${category}` : `/products/${id}`}
           key={id}
           className="group block h-full focus:outline-hidden"
         >

@@ -56,8 +56,10 @@ const getProductById = (productId: string): Promise<ProductResponse> =>
 
 export default function ProductDetailComponent({
   productId,
+  category,
 }: {
   productId: string;
+  category?: string;
 }) {
   const product = getProductById(productId);
 
@@ -70,7 +72,7 @@ export default function ProductDetailComponent({
       }
     >
       <div className="container mx-auto max-w-4xl px-4 py-8">
-        <ProductDetailDisplayComponent product={product} />
+        <ProductDetailDisplayComponent product={product} category={category} />
       </div>
     </Suspense>
   );
