@@ -66,12 +66,12 @@ export default function ProductDetailComponent({
   return (
     <Suspense
       fallback={
-        <div className="container mx-auto max-w-4xl p-8 flex items-center justify-center min-h-[300px]">
+        <div className="container mx-auto max-w-5xl p-8 flex items-center justify-center min-h-[300px]">
           <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
       }
     >
-      <div className="container mx-auto max-w-4xl px-4 py-8">
+      <div className="container mx-auto max-w-5xl px-4 py-8">
         <ProductDetailDisplayComponent product={product} category={category} />
       </div>
     </Suspense>
